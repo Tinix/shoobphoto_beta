@@ -1,110 +1,113 @@
 <br/><br/><br/>
 <div class="row animated fadeIn">
-	<div class="col-xs-2"></div>
-	<div class="col-xs-2">
-		<% unless @image.nil? %>
-			<% if @cart.id_supplied? && @image.try(:watermark_file_name) != nil %>
-				<%= image_tag(@image.watermark.url(:watermark), class: "select_package_image") %>
-			<% else %>
-				<%= image_tag(@option.package.image.url, class: "select_package_image") %>
-			<% end %>
-		<% else %>
-			<%= image_tag(@option.package.image.url, class: "select_package_image") %>
-		<% end %>
-	</div>
+    <div class="col-xs-2">
+        <% unless @image.nil? %>
+            <% if @cart.id_supplied? && @image.try(:watermark_file_name) != nil %>
+                <%= image_tag(@image.watermark.url(:watermark), class: "select_package_image") %>
+            <% else %>
+                <%= image_tag(@option.package.image.url, class: "select_package_image") %>
+            <% end %>
+        <% else %>
+            <%= image_tag(@option.package.image.url, class: "select_package_image") %>
+        <% end %>
+    </div>
 
-	<div class="col-xs-2"> 
-		<% unless request_device?(:ipad) %>
+    <div class="col-xs-2"> 
+        <% unless request_device?(:ipad) %>
 
-		<div class="package_box">
-		<div class="<%= @index.to_words %>"> 
-			<div class="row">
-				<div class="col-xs-4">
-					<% if @option.name.downcase.include?("yearbook") %>
-					<p class="<%= 2 >= @index ? 'white_text' : 'gray_text'%> <%= 'small_yearbook_text' if @option.name.size > 1 %>">
-						<%= @option.name %></p>
-					<% else %>
-					<p class="<%= 2 >= @index ? 'white_text' : 'gray_text'%> <%= 'small_text_package' if @option.name.size > 1 %>">
-						<%= @option.name %></p>
-					<% end %>
-				</div> 
-				<div class="col-xs-8">
-					<% if @option.download? %>
-					<p class="yellow_text">
-						Includes FREE Digital Image
-					</p>
-					<% end %>
+        <div class="package_box">
+        <div class="<%= @index.to_words %>"> 
+            <div class="row">
+                <div class="col-xs-4">
+                    <% if @option.name.downcase.include?("yearbook") %>
+                    <p class="<%= 2 >= @index ? 'white_text' : 'gray_text'%> <%= 'small_yearbook_text' if @option.name.size > 1 %>">
+                        <%= @option.name %></p>
+                    <% else %>
+                    <p class="<%= 2 >= @index ? 'white_text' : 'gray_text'%> <%= 'small_text_package' if @option.name.size > 1 %>">
+                        <%= @option.name %></p>
+                    <% end %>
+                </div> 
+                <div class="col-xs-8">
+                    <% if @option.download? %>
+                    <p class="yellow_text">
+                        Includes FREE Digital Image
+                    </p>
+                    <% end %>
 
-				</div>
-			</div>
-		</div>
-		<div class="<%= @index.to_words %>_content">
-			<div class="scrollbox">
-			<% @option.image_types.each do |type| %>
-			<br/>
+                </div>
+            </div>
+        </div>
+        <div class="<%= @index.to_words %>_content">
+            <div class="scrollbox">
+            <% @option.image_types.each do |type| %>
+            <br/>
 
-				<%= type.name %>
-											
-			<% end %>
-			</div>
-			<div class="row bottom">
-				<div class="col-xs-3 <%= @index %>_bottom_text">
-				$<%= @option.price(@student.school.id).floor %>
-				</div>
+                <%= type.name %>
+                                            
+            <% end %>
+            </div>
+            <div class="row bottom">
+                <div class="col-xs-3 <%= @index %>_bottom_text">
+                $<%= @option.price(@student.school.id).floor %>
+                </div>
 
-			</div>
-		</div>
-	</div>
-		<% end %>
-	</div>
+            </div>
+        </div>
+    </div>
+        <% end %>
+    </div>
 
-	<div class="col-xs-6">
-		<span class="addons_header">
-			Select Addons
-			<div class="addon_box">
-				<table class="table addon_table">
-					<% @option.extra_types.each do |extra_type| %>
-					<% extra_type.extras.each do |extra| %>
-			        	<tr id="<%= extra_type.id %>_<%= extra.id %>" class="<%= 'highlighted' if @opackage.extras.pluck(:id).include? extra.id %>">
-			        		<td>
-			        			<%= extra.name %>
-			        		</td>
-			        		<td id="button_<%= extra_type.id %>_<%= extra.id %>">
-			        			<% if @opackage.extras.pluck(:id).include? extra.id %> 
-			        				<%= link_to "Deselect", delete_addon_path(@opackage.id, extra.id), class: "btn-deselect", remote: true %>
-			        			<% else %>
-			        				<%= link_to "Select", create_addon_path(@opackage.id, extra.id), class: "btn-4", remote: true %>
-			        			<% end %>
-			        		</td>
-			        		<td>
-			        			<%= number_to_currency(extra.prices.first.try(:price), :show_zero => false) %>
-			        		</td>
-			        	</tr>
-			        	<% end%>
-			        	<% end %>
-				</table>
-			</div>
-		</span><br/>
-		<div class="row">
-			<div class="col-xs-5"></div>
-			<div class="col-xs-3">
-				<span class="price">Subtotal: <%= number_to_currency(@option.price, :show_zero => false) %></span>
-			</div>
-			<div class="col-xs-3">
-				<%= link_to "Continue", student_update_path(@cart.cart_id, @cart.students.count - 1), class: "btn-blue" %><br/>
-				<%= link_to "Back", student_select_package_path(@cart.cart_id, @cart.students.count - 1, @option.package.id), class: "btn-blue" %>
-				
-			</div>
-		</div><br/>
-		<div class="row">
-			<div class="col-xs-10">
-				<div class="alert alert-danger" role="alert" align="center">
-				  Do not use the back arrow on your browser
-				</div>
-			</div>
-			<div class="col-xs-2"></div>
-		</div>
+    <div class="col-xs-2">
+        <%= render 'background_choice' %>
+    </div>
 
-		
-	</div>
+    <div class="col-xs-6">
+        <span class="addons_header">
+            Select Addons
+            <div class="addon_box">
+                <table class="table addon_table">
+                    <% @option.extra_types.each do |extra_type| %>
+                    <% extra_type.extras.each do |extra| %>
+                        <tr id="<%= extra_type.id %>_<%= extra.id %>" class="<%= 'highlighted' if @opackage.extras.pluck(:id).include? extra.id %>">
+                            <td>
+                                <%= extra.name %>
+                            </td>
+                            <td id="button_<%= extra_type.id %>_<%= extra.id %>">
+                                <% if @opackage.extras.pluck(:id).include? extra.id %> 
+                                    <%= link_to "Deselect", delete_addon_path(@opackage.id, extra.id), class: "btn-deselect", remote: true %>
+                                <% else %>
+                                    <%= link_to "Select", create_addon_path(@opackage.id, extra.id), class: "btn-4", remote: true %>
+                                <% end %>
+                            </td>
+                            <td>
+                                <%= number_to_currency(extra.prices.first.try(:price), :show_zero => false) %>
+                            </td>
+                        </tr>
+                        <% end%>
+                        <% end %>
+                </table>
+            </div>
+        </span><br/>
+        <div class="row">
+            <div class="col-xs-5"></div>
+            <div class="col-xs-3">
+                <span class="price">Subtotal: <%= number_to_currency(@option.price, :show_zero => false) %></span>
+            </div>
+            <div class="col-xs-3">
+                <%= link_to "Continue", student_update_path(@cart.cart_id, @cart.students.count - 1), class: "btn-blue" %><br/>
+                <%= link_to "Back", student_select_package_path(@cart.cart_id, @cart.students.count - 1, @option.package.id), class: "btn-blue" %>
+                
+            </div>
+        </div><br/>
+        <div class="row">
+            <div class="col-xs-10">
+                <div class="alert alert-danger" role="alert" align="center">
+                  Do not use the back arrow on your browser
+                </div>
+            </div>
+            <div class="col-xs-2"></div>
+        </div>
+
+        
+    </div>
 </div>
